@@ -32,24 +32,32 @@ namespace rtmputil
 			m_dbNum = Convert.ToInt32(db);
 			connStr = String.Format("{0}:{1},password={2},defaultDatabase={3}", ip, port, auth, db);
 		}
-
+		protected void LogMsg(string msg)
+		{
+			Console.WriteLine(msg);
+		}
 		public void Start()
 		{
 			LoadConfig();
 			redis = ConnectionMultiplexer.Connect(connStr);
 			subscriber = redis.GetSubscriber();
 
-			subscriber.Subscribe("new_client", (channel, value) =>
+			subscriber.Subscribe("rtmp_start", (channel, value) =>
 			{
-				Console.WriteLine("kk {0} {1}",channel,value);
-				if ((string)channel == "__keyspace@0__:users" && (string)value == "sadd")
-				{
-					// Do stuff if some item is added to a hypothethical "users" set in Redis
-				}
+				LogMsg(channel + " " + value);
 			}
 			);
 
-			
+			subscriber.Subscribe("rtmp_stop", (channel, value) =>
+			{
+				LogMsg(channel + " " + value);
+			}
+			);
+			subscriber.Subscribe("rtmp_alive", (channel, value) =>
+			{
+				LogMsg(channel + " " + value);
+			}
+			);
 		}
 
 		public void Stop()
