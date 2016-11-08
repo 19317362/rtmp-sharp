@@ -17,6 +17,9 @@ namespace rtmputil
 		private int m_port;
 		private int m_dbNum;
 		ISubscriber subscriber;
+		Dictionary<string, RtmpCtx> m_dict = new Dictionary<string, RtmpCtx>();
+
+		private object theLockObj;
 		public void LoadConfig()
 		{
 			var cfg = new Settings1();
@@ -34,7 +37,21 @@ namespace rtmputil
 		}
 		protected void LogMsg(string msg)
 		{
-			Console.WriteLine(msg);
+			var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
+			Console.WriteLine("TID: "+tid.ToString() + " " + msg);
+		}
+		private RtmpCtx GetCtx(string value)
+		{
+			if (m_dict.ContainsKey(value))
+			{
+				return m_dict[value];
+			}
+			else
+			{
+				var ctx = new RtmpCtx(value);
+				m_dict[value] = ctx;
+				return ctx;
+			}
 		}
 		public void Start()
 		{
@@ -44,18 +61,41 @@ namespace rtmputil
 
 			subscriber.Subscribe("rtmp_start", (channel, value) =>
 			{
-				LogMsg(channel + " " + value);
+				lock (this.theLockObj)
+				{
+					var ctx = GetCtx(value);
+					if (ctx.count == 0)
+					{//start
+						ctx.Start();
+					}
+					ctx.Inc();
+					LogMsg(channel + " " + value + " Cnt:" + ctx.count);
+				}
 			}
 			);
 
 			subscriber.Subscribe("rtmp_stop", (channel, value) =>
 			{
-				LogMsg(channel + " " + value);
+				lock (this.theLockObj)
+				{
+					var ctx = GetCtx(value);
+					ctx.Dec();
+					if (ctx.count == 0)
+					{//start
+						ctx.Stop();
+					}
+					LogMsg(channel + " " + value + " Cnt:" + ctx.count);
+				}
 			}
 			);
 			subscriber.Subscribe("rtmp_alive", (channel, value) =>
 			{
-				LogMsg(channel + " " + value);
+				lock (this.theLockObj)
+				{
+					var ctx = GetCtx(value);
+					ctx.Alive();
+					LogMsg(channel + " " + value + " Cnt:" + ctx.count + " " + DateTime.Now);
+				}
 			}
 			);
 		}
