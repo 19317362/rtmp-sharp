@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RtmpSharp.IO;
 using RtmpSharp.Net;
 using StackExchange.Redis;
+using System.Threading;
 
 namespace rtmputil
 {
@@ -17,9 +18,29 @@ namespace rtmputil
 		private int m_port;
 		private int m_dbNum;
 		ISubscriber subscriber;
-		Dictionary<string, RtmpCtx> m_dict = new Dictionary<string, RtmpCtx>();
+		Dictionary<int, RtmpCtx> m_dict = new Dictionary<int, RtmpCtx>();
 
-		private object theLockObj;
+		System.Threading.Timer _timer;
+
+		public RtmpMgr()
+		{
+			_timer = new Timer(OnTimer,0, Timeout.Infinite, Timeout.Infinite);
+		}
+		private object theLockObj = new object();
+
+		private void OnTimer(Object state)
+		{
+			LogMsg("OnTimer");
+			lock (theLockObj)
+			{
+				_timer.Change(Timeout.Infinite, Timeout.Infinite);//stop timer temp
+				foreach (var v in m_dict)
+				{
+					v.Value.CheckAlive();
+				}
+				_timer.Change(10000, Timeout.Infinite);//stop timer temp
+			}
+		}
 		public void LoadConfig()
 		{
 			var cfg = new Settings1();
@@ -40,16 +61,28 @@ namespace rtmputil
 			var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
 			Console.WriteLine("TID: "+tid.ToString() + " " + msg);
 		}
+// 		private string GetIpcM3u8Key(long Id)
+// 		{
+// 			return String.Format("Ipc:Camera:{0}:m3u8", Id);
+// 		}
+		private string GetIpcPullKey(long Id)
+		{
+			return String.Format("Ipc:Camera:{0}:pull", Id);
+		}
 		private RtmpCtx GetCtx(string value)
 		{
-			if (m_dict.ContainsKey(value))
+			int intId = Convert.ToInt32(value);
+			if (m_dict.ContainsKey(intId))
 			{
-				return m_dict[value];
+				return m_dict[intId];
 			}
 			else
 			{
-				var ctx = new RtmpCtx(value);
-				m_dict[value] = ctx;
+				var urlKey = GetIpcPullKey(intId);
+				var db = redis.GetDatabase();
+				var url = db.StringGet(urlKey);
+				var ctx = new RtmpCtx(intId,url);
+				m_dict[intId] = ctx;
 				return ctx;
 			}
 		}
@@ -64,7 +97,7 @@ namespace rtmputil
 				lock (this.theLockObj)
 				{
 					var ctx = GetCtx(value);
-					if (ctx.count == 0)
+					if (!ctx.IsRuning() )
 					{//start
 						ctx.Start();
 					}
@@ -80,10 +113,10 @@ namespace rtmputil
 				{
 					var ctx = GetCtx(value);
 					ctx.Dec();
-					if (ctx.count == 0)
-					{//start
-						ctx.Stop();
-					}
+// 					if (ctx.IsRuning()) //不做停止操作 -- DELAY以后再停
+// 					{//start
+// 						ctx.Stop();
+// 					}
 					LogMsg(channel + " " + value + " Cnt:" + ctx.count);
 				}
 			}
@@ -98,13 +131,18 @@ namespace rtmputil
 				}
 			}
 			);
+			_timer.Change(10000, Timeout.Infinite);//stop timer temp
 		}
 
 		public void Stop()
 		{
 			//throw new NotImplementedException();
-
 			redis.Close();
+
+			foreach (var v in m_dict)
+			{
+				v.Value.Stop();
+			}
 		}
 
 	}
