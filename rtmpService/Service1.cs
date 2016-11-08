@@ -7,11 +7,13 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using rtmputil;
 
 namespace rtmpService
 {
 	public partial class Service1 : ServiceBase
 	{
+		static RtmpMgr theMgr = new RtmpMgr();
 		public Service1()
 		{
 			InitializeComponent();
@@ -37,10 +39,12 @@ namespace rtmpService
 
 		protected override void OnStart(string[] args)
 		{
+			theMgr.Start();
 		}
 
 		protected override void OnStop()
 		{
+			theMgr.Stop();
 		}
 	}
 }
