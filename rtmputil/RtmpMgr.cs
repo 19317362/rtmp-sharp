@@ -48,12 +48,7 @@ namespace rtmputil
 				}
 			}
 			);
-			var client = new RtmpClient(
-				new Uri("rtmps://ingress.winky.com"),
-				new SerializationContext(),
-				ObjectEncoding.Amf3);
 
-			// connect to the server
 			
 		}
 
