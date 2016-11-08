@@ -99,6 +99,10 @@ namespace rtmputil
 					var ctx = GetCtx(value);
 					if (!ctx.IsRuning() )
 					{//start
+						var urlKey = GetIpcPullKey(ctx.theId);
+						var db = redis.GetDatabase();
+						var url = db.StringGet(urlKey);
+						ctx.UpdateUrl(urlKey);
 						ctx.Start();
 					}
 					ctx.Inc();

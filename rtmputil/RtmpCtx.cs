@@ -28,7 +28,7 @@ namespace rtmputil
 				;
 		}
 		public int count { get; private set; }
-		private int theId;
+		public int theId { get; private set; }
 		private DateTime aliveAt;//最后活动时间
 								 //private RtmpClient client;
 		private Process process;
@@ -121,6 +121,11 @@ namespace rtmputil
 		{
 			LogMsg("Process_OutputDataReceived " + this.theUrl + " "+ e.Data);
 			//throw new NotImplementedException();
+		}
+
+		internal void UpdateUrl(string urlKey)
+		{
+			this.theUrl = urlKey;
 		}
 
 		private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
