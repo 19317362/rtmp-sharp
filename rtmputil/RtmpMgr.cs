@@ -44,7 +44,7 @@ namespace rtmputil
 				{
 					v.Value.CheckAlive();
 				}
-				_timer.Change(10000, Timeout.Infinite);//stop timer temp
+				_timer.Change(30000, Timeout.Infinite);//stop timer temp
 			}
 		}
 		public void LoadConfig()
