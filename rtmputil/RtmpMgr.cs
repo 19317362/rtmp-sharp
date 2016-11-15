@@ -36,7 +36,7 @@ namespace rtmputil
 
 		private void OnTimer(Object state)
 		{
-			LogMsg("OnTimer");
+			//LogMsg("OnTimer");
 			lock (theLockObj)
 			{
 				_timer.Change(Timeout.Infinite, Timeout.Infinite);//stop timer temp
