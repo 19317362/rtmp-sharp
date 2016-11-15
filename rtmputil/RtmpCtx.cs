@@ -80,7 +80,7 @@ namespace rtmputil
 			// 			await client.ConnectAsync();
 			// 			var kk = await client.SubscribeAsync()
 			process = new Process();
-			string arg = String.Format("-r {0} -o null",theUrl);
+			string arg = String.Format("-r {0} -o nul",theUrl);
 			process.StartInfo.FileName = "rtmpdump";
 			process.StartInfo.Arguments = arg;
 
