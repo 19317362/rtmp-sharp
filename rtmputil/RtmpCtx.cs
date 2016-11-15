@@ -12,6 +12,7 @@ namespace rtmputil
 {
 	public class RtmpCtx
 	{
+		EventLog m_logger;
 
 		public RtmpCtx(int Id,string url)
 		{
@@ -42,7 +43,14 @@ namespace rtmputil
 
 		private void LogMsg(string msg)
 		{
-			System.Diagnostics.Debug.WriteLine(msg);
+			if (this.m_logger != null)
+			{
+				m_logger.WriteEntry("RtmpCtx: " + theId + " " + msg);
+			}
+			else
+			{
+				System.Diagnostics.Debug.WriteLine(msg);
+			}
 		}
 
 		internal void CheckAlive()
@@ -50,9 +58,9 @@ namespace rtmputil
 			if (this.IsRuning())
 			{
 				var ss = (DateTime.Now - this.aliveAt).TotalSeconds;
-				LogMsg("Idle time " + ss);
 				if (ss >= 60)
 				{
+					LogMsg("Idle STOP " + ss);
 					this.Stop();
 				}
 			}

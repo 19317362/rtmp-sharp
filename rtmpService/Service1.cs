@@ -34,7 +34,7 @@ namespace rtmpService
 
 			this.EventLog.Source = this.ServiceName;
 			this.EventLog.Log = "Application";
-
+			theMgr.SetLogger(this.EventLog);
 		}
 
 		protected override void OnStart(string[] args)

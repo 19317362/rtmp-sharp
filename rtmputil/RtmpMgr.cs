@@ -7,12 +7,14 @@ using RtmpSharp.IO;
 using RtmpSharp.Net;
 using StackExchange.Redis;
 using System.Threading;
+using System.Diagnostics;
 
 namespace rtmputil
 {
 	public class RtmpMgr
 	{
 		ConnectionMultiplexer redis ;
+		EventLog m_logger;
 		private string connStr;
 		private string m_ip;
 		private int m_port;
@@ -25,6 +27,10 @@ namespace rtmputil
 		public RtmpMgr()
 		{
 			_timer = new Timer(OnTimer,0, Timeout.Infinite, Timeout.Infinite);
+		}
+		public void SetLogger(EventLog lg)
+		{
+			m_logger = lg;
 		}
 		private object theLockObj = new object();
 
@@ -59,16 +65,34 @@ namespace rtmputil
 		protected void LogMsg(string msg)
 		{
 			var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
-			Console.WriteLine("TID: "+tid.ToString() + " " + msg);
+			if (this.m_logger != null)
+			{
+				m_logger.WriteEntry("TID: " + tid.ToString() + " " + msg);
+			}
+			else
+			{
+				Console.WriteLine("TID: " + tid.ToString() + " " + msg);
+			}
 		}
-// 		private string GetIpcM3u8Key(long Id)
-// 		{
-// 			return String.Format("Ipc:Camera:{0}:m3u8", Id);
-// 		}
-		private string GetIpcPullKey(long Id)
+		// 		private string GetIpcM3u8Key(long Id)
+		// 		{
+		// 			return String.Format("Ipc:Camera:{0}:m3u8", Id);
+		// 		}
+		private string GetIpcCameraKey(long Id)
 		{
-			return String.Format("Ipc:Camera:{0}:pull", Id);
+			return String.Format("Ipc:Camera:{0}:url", Id);
 		}
+		private string GetPullUrl(string ffUrl)
+		{//ffmpeg -i rtsp://192.168.1.17:554/user=admin&password=&channel=1&stream=1.sdp?real_stream -f flv -vcodec copy -an rtmp://192.168.1.117/live/1
+			var kk = ffUrl.ToLower().Split(' ');
+			var uu = kk.First(L => L.StartsWith("rtmp://"));
+			return uu;
+		}
+
+		// 		private string GetIpcPullKey(long Id)
+		// 		{
+		// 			return String.Format("Ipc:Camera:{0}:pull", Id);
+		// 		}
 		private RtmpCtx GetCtx(string value)
 		{
 			int intId = Convert.ToInt32(value);
@@ -78,9 +102,9 @@ namespace rtmputil
 			}
 			else
 			{
-				var urlKey = GetIpcPullKey(intId);
+				var urlKey = GetIpcCameraKey(intId);
 				var db = redis.GetDatabase();
-				var url = db.StringGet(urlKey);
+				var url = GetPullUrl( db.StringGet(urlKey) );
 				var ctx = new RtmpCtx(intId,url);
 				m_dict[intId] = ctx;
 				return ctx;
@@ -99,10 +123,10 @@ namespace rtmputil
 					var ctx = GetCtx(value);
 					if (!ctx.IsRuning() )
 					{//start
-						var urlKey = GetIpcPullKey(ctx.theId);
+						var urlKey = GetIpcCameraKey(ctx.theId);
 						var db = redis.GetDatabase();
-						var url = db.StringGet(urlKey);
-						ctx.UpdateUrl(urlKey);
+						var url = GetPullUrl( db.StringGet(urlKey) );
+						ctx.UpdateUrl(url);
 						ctx.Start();
 					}
 					ctx.Inc();
