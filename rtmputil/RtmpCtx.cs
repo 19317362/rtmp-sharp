@@ -131,6 +131,11 @@ namespace rtmputil
 			//throw new NotImplementedException();
 		}
 
+		internal void UpdateLog(EventLog lg)
+		{
+			this.m_logger = lg;
+		}
+
 		internal void UpdateUrl(string urlKey)
 		{
 			this.theUrl = urlKey;

@@ -106,6 +106,7 @@ namespace rtmputil
 				var db = redis.GetDatabase();
 				var url = GetPullUrl( db.StringGet(urlKey) );
 				var ctx = new RtmpCtx(intId,url);
+				ctx.UpdateLog(this.m_logger);
 				m_dict[intId] = ctx;
 				return ctx;
 			}
