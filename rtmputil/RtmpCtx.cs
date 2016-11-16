@@ -38,6 +38,7 @@ namespace rtmputil
 		public int Inc()
 		{
 			count++;
+			this.aliveAt = DateTime.Now;
 			return count;
 		}
 
@@ -68,6 +69,7 @@ namespace rtmputil
 
 		public int Dec()
 		{
+			this.aliveAt = DateTime.Now;
 			if (count >= 1)
 			{
 				count--;
