@@ -84,6 +84,12 @@ namespace rtmputil
 		}
 		private string GetPullUrl(string ffUrl)
 		{//ffmpeg -i rtsp://192.168.1.17:554/user=admin&password=&channel=1&stream=1.sdp?real_stream -f flv -vcodec copy -an rtmp://192.168.1.117/live/1
+			if (string.IsNullOrEmpty(ffUrl))
+			{
+				Console.WriteLine("ERROR: URL NULL");
+				return "";
+			}
+
 			var kk = ffUrl.ToLower().Split(' ');
 			var uu = kk.First(L => L.StartsWith("rtmp://"));
 			return uu;
@@ -126,9 +132,18 @@ namespace rtmputil
 					{//start
 						var urlKey = GetIpcCameraKey(ctx.theId);
 						var db = redis.GetDatabase();
-						var url = GetPullUrl( db.StringGet(urlKey) );
-						ctx.UpdateUrl(url);
-						ctx.Start();
+						var theVal = db.StringGet(urlKey);
+						if (theVal.IsNullOrEmpty)
+						{
+
+						}
+						else
+						{
+							var url = GetPullUrl(theVal);
+							ctx.UpdateUrl(url);
+							ctx.Start();
+						}
+
 					}
 					ctx.Inc();
 					LogMsg(channel + " " + value + " Cnt:" + ctx.count);
