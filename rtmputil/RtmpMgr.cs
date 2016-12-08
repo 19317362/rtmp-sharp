@@ -65,11 +65,11 @@ namespace rtmputil
 		protected void LogMsg(string msg)
 		{
 			var tid = System.Threading.Thread.CurrentThread.ManagedThreadId;
-			if (this.m_logger != null)
-			{
-				m_logger.WriteEntry("TID: " + tid.ToString() + " " + msg);
-			}
-			else
+// 			if (this.m_logger != null)
+// 			{
+// 				m_logger.WriteEntry("TID: " + tid.ToString() + " " + msg);
+// 			}
+// 			else
 			{
 				Console.WriteLine("TID: " + tid.ToString() + " " + msg);
 			}
