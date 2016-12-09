@@ -29,8 +29,6 @@ namespace rtmputil
 		public RtmpMgr()
 		{
 			_timer = new Timer(OnTimer,0, Timeout.Infinite, Timeout.Infinite);
-			mqRx = new MQUtil.Listener(this);
-			mqRx.Initialize();
 		}
 		public void SetLogger(EventLog lg)
 		{
@@ -187,6 +185,8 @@ namespace rtmputil
 		{
 			LoadConfig();
 			redis = ConnectionMultiplexer.Connect(connStr);
+			mqRx = new MQUtil.Listener(this);
+			mqRx.Initialize();
 
 			_timer.Change(10000, Timeout.Infinite);//stop timer temp
 		}
