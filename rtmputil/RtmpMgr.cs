@@ -19,7 +19,9 @@ namespace rtmputil
 		private string m_ip;
 		private int m_port;
 		private int m_dbNum;
-		ISubscriber subscriber;
+		//ISubscriber subscriber;
+		MQUtil.Listener mqRx;
+
 		Dictionary<int, RtmpCtx> m_dict = new Dictionary<int, RtmpCtx>();
 
 		System.Threading.Timer _timer;
@@ -27,6 +29,8 @@ namespace rtmputil
 		public RtmpMgr()
 		{
 			_timer = new Timer(OnTimer,0, Timeout.Infinite, Timeout.Infinite);
+			mqRx = new MQUtil.Listener(this);
+			mqRx.Initialize();
 		}
 		public void SetLogger(EventLog lg)
 		{
@@ -117,18 +121,23 @@ namespace rtmputil
 				return ctx;
 			}
 		}
-		public void Start()
+		public void OnMQMessage(string msg)
 		{
-			LoadConfig();
-			redis = ConnectionMultiplexer.Connect(connStr);
-			subscriber = redis.GetSubscriber();
-
-			subscriber.Subscribe("rtmp_start", (channel, value) =>
+			var tt = msg.Split(' ');
+			if (tt.Length != 2)
+			{
+				LogMsg("ERROR MQ:" + msg);
+				return;
+			}
+			var channel = tt[0];
+			var value = tt[1];
+			//subscriber.Subscribe("rtmp_start", (channel, value) =>
+			if (channel == "rtmp_start")
 			{
 				lock (this.theLockObj)
 				{
 					var ctx = GetCtx(value);
-					if (!ctx.IsRuning() )
+					if (!ctx.IsRuning())
 					{//start
 						var urlKey = GetIpcCameraKey(ctx.theId);
 						var db = redis.GetDatabase();
@@ -149,23 +158,22 @@ namespace rtmputil
 					LogMsg(channel + " " + value + " Cnt:" + ctx.count);
 				}
 			}
-			);
-
-			subscriber.Subscribe("rtmp_stop", (channel, value) =>
+			//subscriber.Subscribe("rtmp_stop", (channel, value) =>
+			else if(channel == "rtmp_stop")
 			{
 				lock (this.theLockObj)
 				{
 					var ctx = GetCtx(value);
 					ctx.Dec();
-// 					if (ctx.IsRuning()) //不做停止操作 -- DELAY以后再停
-// 					{//start
-// 						ctx.Stop();
-// 					}
+					// 					if (ctx.IsRuning()) //不做停止操作 -- DELAY以后再停
+					// 					{//start
+					// 						ctx.Stop();
+					// 					}
 					LogMsg(channel + " " + value + " Cnt:" + ctx.count);
 				}
 			}
-			);
-			subscriber.Subscribe("rtmp_alive", (channel, value) =>
+			//subscriber.Subscribe("rtmp_alive", (channel, value) =>
+			else if (channel == "rtmp_alive")
 			{
 				lock (this.theLockObj)
 				{
@@ -174,7 +182,12 @@ namespace rtmputil
 					LogMsg(channel + " " + value + " Cnt:" + ctx.count + " " + DateTime.Now);
 				}
 			}
-			);
+		}
+		public void Start()
+		{
+			LoadConfig();
+			redis = ConnectionMultiplexer.Connect(connStr);
+
 			_timer.Change(10000, Timeout.Infinite);//stop timer temp
 		}
 
