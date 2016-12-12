@@ -6,7 +6,7 @@
       <Value Profile="(Default)">163.177.152.28</Value>
     </Setting>
     <Setting Name="port" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6379</Value>
+      <Value Profile="(Default)">6380</Value>
     </Setting>
     <Setting Name="auth" Type="System.String" Scope="User">
       <Value Profile="(Default)">winstartech</Value>

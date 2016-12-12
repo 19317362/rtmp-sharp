@@ -25,7 +25,7 @@ namespace rtmputil {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("120.24.208.122")]
+        [global::System.Configuration.DefaultSettingValueAttribute("163.177.152.28")]
         public string ip {
             get {
                 return ((string)(this["ip"]));
@@ -37,7 +37,7 @@ namespace rtmputil {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6379")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6380")]
         public string port {
             get {
                 return ((string)(this["port"]));

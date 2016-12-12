@@ -63,6 +63,7 @@ namespace rtmputil
 			m_port = Convert.ToInt32(port);
 			m_dbNum = Convert.ToInt32(db);
 			connStr = String.Format("{0}:{1},password={2},defaultDatabase={3}", ip, port, auth, db);
+			Console.WriteLine("REDIS:{0}:{1},password={2},defaultDatabase={3}", ip, port, auth, db);
 		}
 		protected void LogMsg(string msg)
 		{
@@ -142,7 +143,7 @@ namespace rtmputil
 						var theVal = db.StringGet(urlKey);
 						if (theVal.IsNullOrEmpty)
 						{
-
+							Console.WriteLine("URL of " + value + " NOT FOUND");
 						}
 						else
 						{

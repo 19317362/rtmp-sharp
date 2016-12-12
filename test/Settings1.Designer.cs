@@ -37,7 +37,7 @@ namespace test {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6379")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6380")]
         public string port {
             get {
                 return ((string)(this["port"]));
