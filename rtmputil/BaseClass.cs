@@ -12,8 +12,8 @@ namespace MQUtil
 	public class BaseClass
 	{
 		//
-		//public const string URI = "activemq:tcp://163.177.152.28:61616";
-		public const string URI = "activemq:tcp://120.24.208.122:61616";
+		public const string URI = "activemq:tcp://163.177.152.28:61616";
+		//public const string URI = "activemq:tcp://120.24.208.122:61616";
 		public IConnectionFactory connectionFactory;
 		public IConnection _connection;
 		public ISession _session;
