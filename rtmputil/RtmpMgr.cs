@@ -38,16 +38,16 @@ namespace rtmputil
 
 		private void OnTimer(Object state)
 		{
-			//LogMsg("OnTimer");
+			LogMsg("OnTimer");
+			_timer.Change(Timeout.Infinite, Timeout.Infinite);//stop timer temp
 			lock (theLockObj)
 			{
-				_timer.Change(Timeout.Infinite, Timeout.Infinite);//stop timer temp
 				foreach (var v in m_dict)
 				{
 					v.Value.CheckAlive();
 				}
-				_timer.Change(30000, Timeout.Infinite);//stop timer temp
 			}
+			_timer.Change(30000, Timeout.Infinite);//stop timer temp
 		}
 		public void LoadConfig()
 		{
