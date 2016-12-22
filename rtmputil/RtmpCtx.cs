@@ -44,14 +44,15 @@ namespace rtmputil
 
 		private void LogMsg(string msg)
 		{
-			if (this.m_logger != null)
-			{
-				m_logger.WriteEntry("RtmpCtx: " + theId + " " + msg);
-			}
-			else
-			{
-				System.Diagnostics.Debug.WriteLine(msg);
-			}
+// 			if (this.m_logger != null)
+// 			{
+// 				m_logger.WriteEntry("RtmpCtx: " + theId + " " + msg);
+// 			}
+// 			else
+// 			{
+// 				System.Diagnostics.Debug.WriteLine(msg);
+// 			}
+			Console.WriteLine("RtmpCtx: " + theId + " " + msg);
 		}
 
 		internal void CheckAlive()
