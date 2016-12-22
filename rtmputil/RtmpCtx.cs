@@ -59,6 +59,7 @@ namespace rtmputil
 			if (this.IsRuning())
 			{
 				var ss = (DateTime.Now - this.aliveAt).TotalSeconds;
+				LogMsg("Idle ? STOP " + ss);
 				if (ss >= 60)
 				{
 					LogMsg("Idle STOP " + ss);
