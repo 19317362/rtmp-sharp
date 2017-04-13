@@ -122,6 +122,7 @@ namespace rtmputil
 		}
 		public void OnMQMessage(string msg)
 		{
+			LogMsg("OnMQMessage:msg");
 			var tt = msg.Split(' ');
 			if (tt.Length != 2)
 			{
