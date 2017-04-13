@@ -70,5 +70,17 @@ namespace rtmputil {
                 this["db"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("activemq:tcp://119.1.96.87:61616")]
+        public string mqurl {
+            get {
+                return ((string)(this["mqurl"]));
+            }
+            set {
+                this["mqurl"] = value;
+            }
+        }
     }
 }
