@@ -14,5 +14,8 @@
     <Setting Name="db" Type="System.String" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="mqurl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">activemq:tcp://119.1.96.87:61616</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

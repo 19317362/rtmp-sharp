@@ -16,6 +16,7 @@ namespace MQUtil
 		public Listener(RtmpMgr mgr)
 		{
 			_mgr = mgr;
+			this.URI = mgr.m_mqurl;
 		}
 		IMessageConsumer consumer;
 		IDestination dest;

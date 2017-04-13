@@ -19,6 +19,7 @@ namespace rtmputil
 		private string m_ip;
 		private int m_port;
 		private int m_dbNum;
+		public string m_mqurl;
 		//ISubscriber subscriber;
 		MQUtil.Listener mqRx;
 
@@ -63,7 +64,9 @@ namespace rtmputil
 			m_port = Convert.ToInt32(port);
 			m_dbNum = Convert.ToInt32(db);
 			connStr = String.Format("{0}:{1},password={2},defaultDatabase={3}", ip, port, auth, db);
+			m_mqurl = cfg.mqurl;
 			Console.WriteLine("REDIS:{0}:{1},password={2},defaultDatabase={3}", ip, port, auth, db);
+			Console.WriteLine("MQ:{0}", m_mqurl);
 		}
 		protected void LogMsg(string msg)
 		{
@@ -122,7 +125,7 @@ namespace rtmputil
 		}
 		public void OnMQMessage(string msg)
 		{
-			LogMsg("OnMQMessage:msg");
+			LogMsg("OnMQMessage:"+msg);
 			var tt = msg.Split(' ');
 			if (tt.Length != 2)
 			{
