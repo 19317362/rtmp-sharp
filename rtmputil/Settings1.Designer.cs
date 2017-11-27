@@ -9,23 +9,23 @@
 //------------------------------------------------------------------------------
 
 namespace rtmputil {
-    
-    
+
+
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
     internal sealed partial class Settings1 : global::System.Configuration.ApplicationSettingsBase {
-        
+
         private static Settings1 defaultInstance = ((Settings1)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings1())));
-        
+
         public static Settings1 Default {
             get {
                 return defaultInstance;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("119.1.96.87")]
+        [global::System.Configuration.DefaultSettingValueAttribute("219.141.127.214")]
         public string ip {
             get {
                 return ((string)(this["ip"]));
@@ -34,7 +34,7 @@ namespace rtmputil {
                 this["ip"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("6380")]
@@ -46,7 +46,7 @@ namespace rtmputil {
                 this["port"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("winstartech")]
@@ -58,7 +58,7 @@ namespace rtmputil {
                 this["auth"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
@@ -70,10 +70,10 @@ namespace rtmputil {
                 this["db"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("activemq:tcp://119.1.96.87:61616")]
+        [global::System.Configuration.DefaultSettingValueAttribute("activemq:tcp://219.141.127.214:61616")]
         public string mqurl {
             get {
                 return ((string)(this["mqurl"]));
